@@ -2,20 +2,29 @@ package apitest;
 
 import cn.afterturn.easypoi.excel.ExcelImportUtil;
 import cn.afterturn.easypoi.excel.entity.ImportParams;
+import cn.afterturn.easypoi.util.PoiPublicUtil;
+import com.alibaba.fastjson.JSON;
 import org.apache.poi.openxml4j.exceptions.InvalidFormatException;
 import org.apache.poi.ss.usermodel.*;
 
+import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.util.List;
 
+import static cn.afterturn.easypoi.excel.ExcelImportUtil.*;
+
 public class excel {
     public static void main(String[] args) {
-        String path="E:\\tenzidonghua\\src\\main\\resources\\case.xls";
-        excel.read(path);
+        String path="D:\\workspace\\Java\\Spring\\JAVAZ\\tenzidonghua\\API_2\\src\\main\\resources\\cases_v3.xlsx";
+        try {
+            excel.read(path);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
-public static void read(String path){
+public static void read(String path) throws Exception {
 //加载excel流对象
     FileInputStream fis= null;
     try {
@@ -25,11 +34,10 @@ public static void read(String path){
     }
 //导入参数对象
     ImportParams params=new ImportParams();
-    try {
-        List<Object> importExcel = ExcelImportUtil.importExcel(fis, pojo.API.class, params);
-    } catch (Exception e) {
-        e.printStackTrace();
-    }
+    params.setSheetNum(2);
+    List<API> importExcel = ExcelImportUtil.importExcel(fis, API.class, params);
+    System.out.println(importExcel.size());
+    System.out.println(JSON.toJSONString(importExcel));
 }
 //    public static Object[][] read(String path) {
 //        Object[][] data = null;
