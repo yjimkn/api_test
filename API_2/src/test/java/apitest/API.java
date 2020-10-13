@@ -2,6 +2,8 @@ package apitest;
 
 import cn.afterturn.easypoi.excel.annotation.Excel;
 
+import javax.validation.constraints.NotNull;
+
 /**
  * @Auther: clx
  * @Date: 2020/10/12 22:13
@@ -10,14 +12,19 @@ import cn.afterturn.easypoi.excel.annotation.Excel;
  */
 public class API {
     @Excel(name = "接口编号")
+    @NotNull
     private String id;
     @Excel(name = "接口名称")
+    @NotNull
     private String name;
     @Excel(name = "接口提交方式")
+    @NotNull
     private String type;
     @Excel(name = "接口地址")
+    @NotNull
     private String url;
     @Excel(name = "参数类型")
+    @NotNull
     private String contentType;
     public API(){super();}
     public API(String id, String name, String type, String url, String contentType) {

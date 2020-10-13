@@ -1,19 +1,26 @@
 package apitest;
 
+import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
 import org.apache.http.Header;
 import org.apache.http.HttpEntity;
 import org.apache.http.HttpResponse;
+import org.apache.http.NameValuePair;
 import org.apache.http.client.HttpClient;
+import org.apache.http.client.entity.UrlEncodedFormEntity;
 import org.apache.http.client.methods.HttpGet;
 import org.apache.http.client.methods.HttpPatch;
 import org.apache.http.client.methods.HttpPost;
 import org.apache.http.entity.StringEntity;
 import org.apache.http.impl.client.HttpClients;
+import org.apache.http.message.BasicNameValuePair;
 import org.apache.http.util.EntityUtils;
 
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
+import java.nio.charset.Charset;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
@@ -87,10 +94,15 @@ public static void posttest(String url,String params){
    httpPost.addHeader("Content-Type","application/json");
    //添加参数
    try {
-      new StringEntity(params);
-   } catch (UnsupportedEncodingException e) {
-      e.printStackTrace();
-      System.out.println("参数错误");
+      StringEntity entity = new StringEntity(params, Charset.forName("UTF-8"));
+      httpPost.setEntity(entity);
+   }
+//   catch (IOException e) {
+//      e.printStackTrace();
+//      System.out.println("参数错误");
+//   }
+   finally {
+
    }
    //点击发送请求
    HttpClient client = HttpClients.createDefault();

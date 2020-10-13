@@ -11,6 +11,7 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.List;
 
 import static cn.afterturn.easypoi.excel.ExcelImportUtil.*;
@@ -18,26 +19,86 @@ import static cn.afterturn.easypoi.excel.ExcelImportUtil.*;
 public class excel {
     public static void main(String[] args) {
         String path="D:\\workspace\\Java\\Spring\\JAVAZ\\tenzidonghua\\API_2\\src\\main\\resources\\cases_v3.xlsx";
+        List<API> list = excel.read(path, 1, API.class);
+        System.out.println(JSON.toJSONString(list));
+        List<Case> read = excel.read(path, 2, Case.class);
+        System.out.println(JSON.toJSONString(read));
+
+    }
+
+
+    //待完善
+    public static Object[][] getObject(String path){
+        List<API> list = excel.read(path, 1, API.class);
+
+        List<Case> read = excel.read(path, 2, Case.class);
+        Object [][] ob1 = new Object[list.size()*read.size()][2];
+        int[][]a2=new int[2][3];
+        API api = null;
+        Case params = null;
+        int count = 0;
+        for (int i=0;i<list.size();i++){
+            api= list.get(i);
+            for (int j=0;j<read.size();j++){
+                params = read.get(j);
+                if(params.getAPIid().equals(api.getId())){
+                ob1[count][0] = api;
+                ob1[count][1] = params;
+                    count++;
+                }else{
+
+                }
+            }
+        }
+        return ob1;
+    }
+
+    public static List<Case> getUrlAndParams(String path){
+        List<API> list = excel.read(path, 1, API.class);
+
+        List<Case> read = excel.read(path, 2, Case.class);
+
+        List<Case> listCase = new ArrayList<>();
+        API api = null;
+        Case params = null;
+        for (int i=0;i<list.size();i++){
+            api= list.get(i);
+            for (int j=0;j<read.size();j++){
+                params = read.get(j);
+
+                if(params.getAPIid().equals(api.getId())){
+                    params.setApi_url(api.getUrl());
+                    params.setApi_name(api.getName());
+                    params.setApi_contentType(api.getContentType());
+                    params.setApi_type(api.getType());
+                    listCase.add(params);
+                }
+            }
+        }
+        return listCase;
+    }
+public static <T> List<T> read(String path,int sheetIndex,Class<T> Clazz) {
+
+//加载excel流对象
+    FileInputStream fis = null;
+    try {
+        fis = new FileInputStream(path);
+//导入参数对象
+        ImportParams params = new ImportParams();
+        params.setNeedVerfiy(true);//防止返回为null
+        params.setSheetNum(sheetIndex);
+        List<T> importExcel = ExcelImportUtil.importExcel(fis, Clazz, params);
+        return importExcel;
+    } catch (Exception e) {
+        e.printStackTrace();
+    } finally {
         try {
-            excel.read(path);
-        } catch (Exception e) {
+            fis.close();
+        } catch (IOException e) {
             e.printStackTrace();
         }
     }
-public static void read(String path) throws Exception {
-//加载excel流对象
-    FileInputStream fis= null;
-    try {
-        fis = new FileInputStream(path);
-    } catch (FileNotFoundException e) {
-        e.printStackTrace();
-    }
-//导入参数对象
-    ImportParams params=new ImportParams();
-    params.setSheetNum(2);
-    List<API> importExcel = ExcelImportUtil.importExcel(fis, API.class, params);
-    System.out.println(importExcel.size());
-    System.out.println(JSON.toJSONString(importExcel));
+    return null;
 }
 //    public static Object[][] read(String path) {
 //        Object[][] data = null;
